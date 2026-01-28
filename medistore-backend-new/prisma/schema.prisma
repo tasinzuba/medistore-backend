@@ -16,8 +16,43 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  medicines Medicine[] @relation("SellerMedicines")
+
   @@map("users")
 }
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  medicines   Medicine[]
+
+  @@map("categories")
+}
+
+model Medicine {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  stock       Int      @default(0)
+  image       String?
+  categoryId  String
+  sellerId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  seller      User     @relation("SellerMedicines", fields: [sellerId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@index([sellerId])
+  @@map("medicines")
+}
+
 
 enum Role {
   CUSTOMER
