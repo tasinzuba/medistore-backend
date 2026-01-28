@@ -8,6 +8,7 @@ import authRoutes from "./routes/auth.routes";
 import medicineRoutes from "./routes/medicine.routes";
 import sellerRoutes from "./routes/seller.routes";
 import orderRoutes from "./routes/order.routes";
+import adminRoutes from "./routes/admin.routes";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/medicines", medicineRoutes);
 app.use("/api/seller", sellerRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 app.get("/", (req: Request, res: Response) => {
