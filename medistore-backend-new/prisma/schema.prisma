@@ -17,6 +17,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   orders    Order[]
+  reviews   Review[]
   medicines Medicine[] @relation("SellerMedicines")
 
   @@map("users")
@@ -89,11 +90,31 @@ model Medicine {
 
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   seller      User     @relation("SellerMedicines", fields: [sellerId], references: [id], onDelete: Cascade)
+  orderItems  OrderItem[]
+  reviews     Review[]
 
   @@index([categoryId])
   @@index([sellerId])
   @@map("medicines")
 }
+
+model Review {
+  id        String   @id @default(cuid())
+  medicineId String
+  customerId String
+  rating    Int      @db.SmallInt
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+  customer User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([medicineId])
+  @@index([customerId])
+  @@map("reviews")
+}
+
 
 
 enum Role {

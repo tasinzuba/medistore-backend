@@ -79,3 +79,28 @@ export const getMedicineById = async (req: Request, res: Response) => {
         return res.status(500).json(errorResponse("Failed to fetch medicine details"));
     }
 };
+
+export const addReview = async (req: any, res: Response) => {
+    try {
+        const { medicineId, rating, comment } = req.body;
+        const customerId = req.user?.id;
+
+        if (!medicineId || !rating || !customerId) {
+            return res.status(400).json(errorResponse("MedicineId and rating are required"));
+        }
+
+        const review = await prisma.review.create({
+            data: {
+                medicineId,
+                customerId,
+                rating: parseInt(rating),
+                comment,
+            },
+        });
+
+        return res.status(201).json(successResponse(review, "Review added successfully"));
+    } catch (error: any) {
+        console.error("Add review error:", error);
+        return res.status(500).json(errorResponse("Failed to add review"));
+    }
+};
