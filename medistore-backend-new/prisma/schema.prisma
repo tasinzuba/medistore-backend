@@ -16,10 +16,52 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  orders    Order[]
   medicines Medicine[] @relation("SellerMedicines")
 
   @@map("users")
 }
+
+model Order {
+  id               String   @id @default(cuid())
+  customerId       String
+  totalPrice       Float
+  status           OrderStatus @default(PLACED)
+  shippingAddress  String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  customer User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  items    OrderItem[]
+
+  @@index([customerId])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  medicineId String
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+
+  order    Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  medicine Medicine  @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([medicineId])
+  @@map("order_items")
+}
+
 
 model Category {
   id          String   @id @default(cuid())
